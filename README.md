@@ -39,7 +39,10 @@ Three basic animations included:
 
 ### Custom animations
 
-You can extend the controler wit hown animations. Be sure to pass strip length and loop duration in ms.
+You can extend the controler with own animations. 
+Defined 'frame()' method should accept 'offset' argument (between 0 and 1), and set color for every self.leds[el].
+
+Be sure to pass strip length and loop duration in ms.
 
 ```python
 class FillAnimation(NeopixelAnimate):
