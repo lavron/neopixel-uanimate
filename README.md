@@ -35,6 +35,10 @@ Three basic animations included:
 2. Pulse
 3. Rotate
 
+![video with example_simple.py running on the WS2812B strip](https://github.com/lavron/neopixel-uanimate/blob/master/img/preview.gif)
+Check this video with example_simple.py running on the WS2812B strip:
+https://www.youtube.com/watch?v=a1_O9AnuGB0
+
 
 
 ### Custom animations
@@ -45,15 +49,12 @@ Defined 'frame()' method should accept 'offset' argument (between 0 and 1), and 
 Be sure to pass strip length and loop duration in ms.
 
 ```python
+# filling strip with BLUE from bottom to top
 class FillAnimation(NeopixelAnimate):
     def frame(self, offset):
-        color = self.params.get("color_passed_to_fill")
         active_px = int(self.len * offset)
         for i in range(self.len):
-            if i <= active_px:
-                self.leds[i] = color
-            else:
-                self.leds[i] = BLACK
+            self.leds[i] = BLUE if i <= active_px else BLACK
 
 #callback example
 def fill_animation_callback():
@@ -64,16 +65,6 @@ fill = FillAnimation(strip_len, 3000, color_passed_to_fill=GREEN,
                      loop=False, callback=fill_animation_callback)
 ```
 
-## Authors
-
-* **Viktor Lavron** - *Initial work* - [https://lavron.info](https://lavron.info)
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-<!-- ## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc -->

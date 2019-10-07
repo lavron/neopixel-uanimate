@@ -89,7 +89,7 @@ class RotateAnimation (NeopixelAnimate):
         for i in range(self.len):
             result[i] = color if i < width_px else color_bg
 
-        # now shift result forward for active_px
+        # shift result forward for active_px
         result = result[active_px:] + result[:active_px]
 
         if direction == "ccw":
