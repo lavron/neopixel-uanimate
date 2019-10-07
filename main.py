@@ -3,7 +3,7 @@ from machine import Pin
 from neopixel_animate import NeopixelAnimate, PulseAnimation, RainbowAnimation, RotateAnimation
 import uasyncio as asyncio
 
-strip_len = 250
+strip_len = 25
 
 strip = neopixel.NeoPixel(Pin(22), strip_len)
 
@@ -18,6 +18,8 @@ rainbow = RainbowAnimation(strip_len, 2000)
 rotate = RotateAnimation(strip_len, 2000, color=BLUE, color_bg=BLACK, dir='cw')
 
 
+
+
 # adding user's animation
 # offset is float 0.0 ~ 1.0
 class FillAnimation(NeopixelAnimate):
@@ -30,7 +32,9 @@ class FillAnimation(NeopixelAnimate):
             else:
                 self.leds[i] = BLACK
 
-#callback example
+# callback example
+
+
 def fill_animation_callback():
     print("Fill animation completed")
 
@@ -57,14 +61,15 @@ async def toggle_animation():
 
 
 async def process_animation():
+    frame = False
     while True:
         frame = active_animation.get_frame()
         if frame:
             for i in range(strip_len):
-                strip[i] = frame[i]
+                strip[i] = frame[i][:]
             strip.write()
         await asyncio.sleep_ms(50)
-        
+
 
 loop = asyncio.get_event_loop()
 

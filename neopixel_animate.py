@@ -2,6 +2,7 @@ import utime
 import math
 
 
+
 class NeopixelAnimate:
     def __init__(self, strip_len, duration_ms=0, **params):
         self.len = strip_len
@@ -84,15 +85,17 @@ class RotateAnimation (NeopixelAnimate):
 
         active_px = int(offset * self.len)
 
-        result = []
+        result = [0] * self.len
         for i in range(self.len):
-            self.leds = color if i < width_px else color_bg
+            result[i] = color if i < width_px else color_bg
 
         # now shift result forward for active_px
-        self.leds = self.leds[active_px:] + self.leds[:active_px]
+        result = result[active_px:] + result[:active_px]
 
         if direction == "ccw":
-            self.leds.reverse()
+            result.reverse()
+        self.leds = result
+        # print("self.leds:", self.leds)
 
 
 def hsv2rgb(h, s, v):
