@@ -1,10 +1,3 @@
-
-Three basic animations included: 
-
-1. Rainbow
-2. Pulse
-3. Rotate
-
 # Neopixel uAnimate
 
 Micropython library for the animations on the Neopixels (WS2812 etc)
@@ -33,6 +26,16 @@ while True:
         strip.write()
 
 ```
+
+### Basic animations
+
+Three basic animations included: 
+
+1. Rainbow
+2. Pulse
+3. Rotate
+
+
 
 ### Custom animations
 
