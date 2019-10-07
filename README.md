@@ -36,6 +36,8 @@ Three basic animations included:
 3. Rotate
 
 ![video with example_simple.py running on the WS2812B strip](https://github.com/lavron/neopixel-uanimate/blob/master/img/preview.gif)
+
+
 Check this video with example_simple.py running on the WS2812B strip:
 https://www.youtube.com/watch?v=a1_O9AnuGB0
 
