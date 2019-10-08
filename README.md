@@ -63,8 +63,7 @@ def fill_animation_callback():
     print("Fill animation completed")
 
 
-fill = FillAnimation(strip_len, 3000, color_passed_to_fill=GREEN,
-                     loop=False, callback=fill_animation_callback)
+fill = FillAnimation(strip_len, 3000, loop=False, callback=fill_animation_callback)
 ```
 
 ## License
