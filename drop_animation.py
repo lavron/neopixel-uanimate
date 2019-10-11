@@ -1,81 +1,60 @@
-# https://www.youtube.com/watch?v=a1_O9AnuGB0
-import neopixel
-from machine import Pin
-from neopixel_animate import NeopixelAnimate, PulseAnimation, RainbowAnimation, RotateAnimation
-import uasyncio as asyncio
-import urandom
-import utime
-
-strip_len = 25
-
-strip = neopixel.NeoPixel(Pin(22), strip_len)
-
-GREEN = (0, 128, 0)
-RED = (128, 0, 0)
-BLUE = (0, 0, 128)
-BLACK = (0, 0, 0)
-
 
 class DropAnimation(NeopixelAnimate):
-    # def __init__(self, strip_len, duration_ms=0, **params):
-    #     super().__init__(strip_len, duration_ms=duration_ms, **params)
-        # self.hot_points = [0] * self.len
+    def __init__(self, strip_len, duration_ms=0, **params):
+        super().__init__(strip_len, duration_ms=duration_ms, **params)
+        # self.loop = False
+        self.drop = {
+            'color1' : random_color(),
+            'color2' : random_color(),
+            'width_px':  25,
+            
+        }
+        self.generate_drop()
+
+    def generate_drop(self):
+        print("self.drop:", self.drop)
+        self.drop = {
+            'init_px': random.randrange(0, self.len),
+            'edge_px': random.randrange(4, 10),
+            'color1' : self.drop['color2'],
+            'color2' : random_color()
+            
+        }
+        print("new drop:", self.drop)
+
     def frame(self, offset):
-        width_px = randint(5, 7)
-        init_px = randint(0, self.len)
-        edge_px = randint(1, 3)
+
+        drop = self.drop
+        width_px = drop['width_px']
+        init_px = drop['init_px']
+        edge_px = drop['edge_px']
         
-        print("Generated drop. Width: %s, init:%s, edge: %s", width_px, init_px, edge_px)
-        
+        color1 = drop['color1']
+        color2 = drop['color2']
+
         active_px = width_px * wave(offset)
-        blur = active_px%1
+        offset = active_px % 1
         filled_px = int(active_px) - edge_px
 
+        result = [0] * self.len
+
         for i in range(self.len):
-            if i <= filled_px:
-                result[i] = BLUE
+            if i < filled_px:
+                result[i] = color1
+
             elif i <= active_px:
-                blur_offset = blur - i / edge_px
-                result[i] = mix(BLUE, BLACK, blur_offset)
+                j = i - filled_px
+                blur_offset = max((offset - 1 - j) / edge_px + 1, 0) #magic formula
+                result[i] = mix(color1, color2, blur_offset)
+
             else:
-                result[i] = BLACK
+                result[i] = color2
 
-        result = result[init_px:] + result[:init_px]
-        
+            # result = result[init_px:] + result[:init_px]
+            
         for i in range(self.len):
-            self.leds[i] = result[i]
+            if self.leds[i] != BLACK:
+                self.leds[i] = result[i]
+            else:
+                self.leds[i] = mix(result[i], self.leds[i], 0.5)
 
-
-drop = DropAnimation(strip_len, 2000)
-
-
-def randint(min, max):
-    span = max - min + 1
-    div = 0x3fffffff // span
-    offset = urandom.getrandbits(30) // div
-    val = min + offset
-    return val
-
-
-def wave(offset):
-    if offset > 0.5:
-        offset = 1 - offset
-    return offset * 2
-
-
-async def process_animation():
-    drop.start()
-    while True:
-        frame = drop.get_frame()
-        if frame:
-            for i in range(strip_len):
-                strip[i] = frame[i][:]
-            strip.write()
-        await asyncio.sleep_ms(50)
-
-
-loop = asyncio.get_event_loop()
-
-loop.create_task(process_animation())
-
-loop.run_forever()

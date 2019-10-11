@@ -1,12 +1,13 @@
 import utime
 import math
-
+import random
 
 
 class NeopixelAnimate:
     def __init__(self, strip_len, duration_ms=0, **params):
         self.len = strip_len
         self.params = params
+    
 
         self.duration_ms = duration_ms
         self.start_ms = 0
@@ -17,6 +18,8 @@ class NeopixelAnimate:
 
         self.leds = [0] * self.len
 
+        self.frame_count = 0
+
     def start(self):
         self.start_ms = utime.ticks_ms()
         self.status = True  # active
@@ -26,6 +29,7 @@ class NeopixelAnimate:
             callback = self.params.get("callback")
             callback()
         self.status = False
+        self.frame_count = 0
 
     def frame(self, offset):
         return self.leds
@@ -38,6 +42,7 @@ class NeopixelAnimate:
         if self.status == False:
             # bail, no active animation
             return False
+        self.frame_count += 1
 
         self.now_ms = utime.ticks_ms()
         passed_ms = utime.ticks_diff(self.now_ms, self.start_ms)
@@ -156,3 +161,31 @@ def wave(offset):
 
 def lerp(a,  b,  f):
     return a + f * (b - a)
+
+
+def mix(a, b, t):
+    r1, g1, b1 = a
+    r2, g2, b2 = b
+    r = int(math.sqrt((1 - t) * r2 ** 2 + t * r1 ** 2))
+    g = int(math.sqrt((1 - t) * g2 ** 2 + t * g1 ** 2))
+    b = int(math.sqrt((1 - t) * b2 ** 2 + t * b1 ** 2))
+    return (r, g, b)
+
+
+count = 0
+def random_color():
+    global count
+    color = [0,0,0]
+    color[count] = random.randrange(256)
+    a0 = random.randrange(1)
+    
+    a1 = ((1-a0)+count+1) % 3
+    
+    a0 = (count+a0+1) % 3
+    color[a0] = 255-color[count]
+    color[a1] = 0
+    count += random.randrange(15)
+    count %= 3
+    print(color[0], color[1], color[2])
+    return ( color[0], color[1], color[2])
+     
